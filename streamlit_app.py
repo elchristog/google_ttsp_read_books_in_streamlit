@@ -16,7 +16,7 @@ def main():
     st.header("Upload a .txt File")
     uploaded_file = st.file_uploader("Choose a .txt file", type=["txt"])
 
-    if uploaded_file is not None:
+    if uploaded_file is not None and uploaded_file:
         text = uploaded_file.read().decode("utf-8")
 
         st.header("Text Preview")
@@ -31,6 +31,8 @@ def main():
             st.markdown(get_binary_file_downloader_html(audio_file, file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
 
             st.info("Click the 'Download Audio' link to download the synthesized speech as an MP3 file.")
+    elif uploaded_file is not None and not uploaded_file:
+        st.warning("Please select a valid .txt file.")
 
 def get_binary_file_downloader_html(bin_file, file_label='File', file_name='output.bin'):
     data = bin_file.read()
