@@ -1,7 +1,5 @@
 import streamlit as st
 from gtts import gTTS
-from tempfile import NamedTemporaryFile
-from playsound import playsound
 import io
 
 def synthesize_text(text, language="en"):
@@ -27,13 +25,17 @@ def main():
         language = st.selectbox("Select Language", ["en", "es", "fr", "de"])
         if st.button("Synthesize Speech"):
             audio_file = synthesize_text(text, language)
-            st.audio(audio_file, format="audio/mp3")
 
-            st.header("Playback")
-            st.audio(audio_file, format="audio/mp3", start_time=0)
+            st.header("Download")
+            st.markdown(get_binary_file_downloader_html(audio_file, file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
 
-            st.info("You can click the play button above to listen to the generated speech.")
+            st.info("Click the 'Download Audio' link to download the synthesized speech as an MP3 file.")
+
+def get_binary_file_downloader_html(bin_file, file_label='File', file_name='output.bin'):
+    data = bin_file.getvalue()
+    b64 = base64.b64encode(data).decode()
+    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{file_name}">{file_label}</a>'
+    return href
 
 if __name__ == "__main__":
     main()
-
