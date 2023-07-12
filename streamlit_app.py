@@ -2,13 +2,13 @@ import streamlit as st
 from gtts import gTTS
 import io
 import base64
-import tempfile
 import os
 
 def synthesize_text(text, language="en"):
     speech = gTTS(text=text, lang=language)
     audio_data = io.BytesIO()
-    speech.save(audio_data)
+    audio_file_path = "output.mp3"
+    speech.save(audio_file_path)
     audio_data.seek(0)
     return audio_data
 
@@ -30,19 +30,11 @@ def main():
             audio_data = synthesize_text(text, language)
 
             st.header("Download")
-            temp_file_path = save_temp_file(audio_data, file_name='output.mp3')
-            st.markdown(get_file_downloader_html(temp_file_path, file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
+            st.markdown(get_file_downloader_html(audio_file_path, file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
 
             st.info("Click the 'Download Audio' link to download the synthesized speech as an MP3 file.")
     elif uploaded_file is not None and not uploaded_file:
         st.warning("Please select a valid .txt file.")
-
-def save_temp_file(bin_file, file_name):
-    temp_dir = tempfile.TemporaryDirectory()
-    temp_file_path = os.path.join(temp_dir.name, file_name)
-    with open(temp_file_path, 'wb') as f:
-        f.write(bin_file.read())
-    return temp_file_path
 
 def get_file_downloader_html(file_path, file_label='File', file_name='output.bin'):
     with open(file_path, "rb") as f:
