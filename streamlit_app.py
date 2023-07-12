@@ -3,6 +3,7 @@ from gtts import gTTS
 import io
 import base64
 import tempfile
+import os
 
 def synthesize_text(text, language="en"):
     speech = gTTS(text=text, lang=language)
@@ -10,7 +11,6 @@ def synthesize_text(text, language="en"):
     speech.save(audio_data)
     audio_data.seek(0)
     return audio_data
-
 
 def main():
     st.title("Text-to-Speech App")
@@ -30,8 +30,8 @@ def main():
             audio_data = synthesize_text(text, language)
 
             st.header("Download")
-            temp_file = save_temp_file(audio_data, file_name='output.mp3')
-            st.markdown(get_file_downloader_html(temp_file, file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
+            temp_file_path = save_temp_file(audio_data, file_name='output.mp3')
+            st.markdown(get_file_downloader_html(temp_file_path, file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
 
             st.info("Click the 'Download Audio' link to download the synthesized speech as an MP3 file.")
     elif uploaded_file is not None and not uploaded_file:
@@ -39,7 +39,7 @@ def main():
 
 def save_temp_file(bin_file, file_name):
     temp_dir = tempfile.TemporaryDirectory()
-    temp_file_path = temp_dir.name + '/' + file_name
+    temp_file_path = os.path.join(temp_dir.name, file_name)
     with open(temp_file_path, 'wb') as f:
         f.write(bin_file.read())
     return temp_file_path
