@@ -2,12 +2,14 @@ import streamlit as st
 from gtts import gTTS
 from tempfile import NamedTemporaryFile
 from playsound import playsound
+import io
 
 def synthesize_text(text, language="en"):
     speech = gTTS(text=text, lang=language)
-    temp_file = NamedTemporaryFile(delete=True)
-    speech.save(temp_file.name)
-    return temp_file.name
+    audio_data = io.BytesIO()
+    speech.save(audio_data)
+    audio_data.seek(0)
+    return audio_data
 
 def main():
     st.title("Text-to-Speech App")
