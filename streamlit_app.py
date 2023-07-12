@@ -2,6 +2,7 @@ import streamlit as st
 from gtts import gTTS
 import io
 import base64
+import tempfile
 
 def synthesize_text(text, language="en"):
     speech = gTTS(text=text, lang=language)
@@ -9,10 +10,6 @@ def synthesize_text(text, language="en"):
     speech.save(audio_data)
     audio_data.seek(0)
     return audio_data
-
-def save_audio_file(audio_file, file_name):
-    with open(file_name, "wb") as file:
-        file.write(audio_file.read())
 
 def main():
     st.title("Text-to-Speech App")
@@ -31,22 +28,23 @@ def main():
         if st.button("Synthesize Speech"):
             audio_file = synthesize_text(text, language)
 
-            # Save the audio file
-            save_audio_file(audio_file, "output.mp3")
-
             st.header("Download")
-            st.markdown(get_binary_file_downloader_html("output.mp3", file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
+            temp_file = save_temp_file(audio_file, file_name='output.mp3')
+            st.markdown(get_file_downloader_html(temp_file, file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
 
             st.info("Click the 'Download Audio' link to download the synthesized speech as an MP3 file.")
     elif uploaded_file is not None and not uploaded_file:
         st.warning("Please select a valid .txt file.")
 
-def get_binary_file_downloader_html(file_path, file_label='File', file_name='output.bin'):
-    with open(file_path, "rb") as file:
-        data = file.read()
+def save_temp_file(bin_file, file_name):
+    temp_dir = tempfile.TemporaryDirectory()
+    temp_file_path = temp_dir.name + '/' + file_name
+    with open(temp_file_path, 'wb') as f:
+        f.write(bin_file.read())
+    return temp_file_path
 
-    b64 = base64.b64encode(data).decode()
-    href = f'<a href="data:application/octet-stream;base64,{b64}" download="{file_name}">{file_label}</a>'
+def get_file_downloader_html(file_path, file_label='File', file_name='output.bin'):
+    href = f'<a href="data:file/txt;base64,{base64.b64encode(file_path.encode()).decode()}" download="{file_name}">{file_label}</a>'
     return href
 
 if __name__ == "__main__":
