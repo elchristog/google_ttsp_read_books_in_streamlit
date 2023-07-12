@@ -10,6 +10,10 @@ def synthesize_text(text, language="en"):
     audio_data.seek(0)
     return audio_data
 
+def save_audio_file(audio_file, file_name):
+    with open(file_name, "wb") as file:
+        file.write(audio_file.read())
+
 def main():
     st.title("Text-to-Speech App")
 
@@ -27,15 +31,20 @@ def main():
         if st.button("Synthesize Speech"):
             audio_file = synthesize_text(text, language)
 
+            # Save the audio file
+            save_audio_file(audio_file, "output.mp3")
+
             st.header("Download")
-            st.markdown(get_binary_file_downloader_html(audio_file, file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
+            st.markdown(get_binary_file_downloader_html("output.mp3", file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
 
             st.info("Click the 'Download Audio' link to download the synthesized speech as an MP3 file.")
     elif uploaded_file is not None and not uploaded_file:
         st.warning("Please select a valid .txt file.")
 
-def get_binary_file_downloader_html(bin_file, file_label='File', file_name='output.bin'):
-    data = bin_file.read()
+def get_binary_file_downloader_html(file_path, file_label='File', file_name='output.bin'):
+    with open(file_path, "rb") as file:
+        data = file.read()
+
     b64 = base64.b64encode(data).decode()
     href = f'<a href="data:application/octet-stream;base64,{b64}" download="{file_name}">{file_label}</a>'
     return href
