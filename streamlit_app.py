@@ -7,9 +7,10 @@ import tempfile
 def synthesize_text(text, language="en"):
     speech = gTTS(text=text, lang=language)
     audio_data = io.BytesIO()
-    speech.save(audio_data)
+    speech.save("output.mp3")
     audio_data.seek(0)
     return audio_data
+
 
 def main():
     st.title("Text-to-Speech App")
