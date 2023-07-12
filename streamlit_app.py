@@ -30,14 +30,14 @@ def main():
             audio_data = synthesize_text(text, language)
 
             st.header("Download")
-            st.markdown(get_file_downloader_html(audio_file_path, file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
+            st.markdown(get_file_downloader_html(file_label='Download Audio', file_name='output.mp3'), unsafe_allow_html=True)
 
             st.info("Click the 'Download Audio' link to download the synthesized speech as an MP3 file.")
     elif uploaded_file is not None and not uploaded_file:
         st.warning("Please select a valid .txt file.")
 
-def get_file_downloader_html(file_path, file_label='File', file_name='output.bin'):
-    with open(file_path, "rb") as f:
+def get_file_downloader_html(file_label='File', file_name='output.bin'):
+    with open(file_name, "rb") as f:
         data = f.read()
     b64 = base64.b64encode(data).decode()
     href = f'<a href="data:application/octet-stream;base64,{b64}" download="{file_name}">{file_label}</a>'
