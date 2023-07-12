@@ -1,6 +1,7 @@
 import streamlit as st
 from gtts import gTTS
 import io
+import base64
 
 def synthesize_text(text, language="en"):
     speech = gTTS(text=text, lang=language)
