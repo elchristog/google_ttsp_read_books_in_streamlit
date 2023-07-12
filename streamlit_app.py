@@ -33,7 +33,7 @@ def main():
             st.info("Click the 'Download Audio' link to download the synthesized speech as an MP3 file.")
 
 def get_binary_file_downloader_html(bin_file, file_label='File', file_name='output.bin'):
-    data = bin_file.getvalue()
+    data = bin_file.read()
     b64 = base64.b64encode(data).decode()
     href = f'<a href="data:application/octet-stream;base64,{b64}" download="{file_name}">{file_label}</a>'
     return href
