@@ -21,8 +21,8 @@ The Text-to-Speech App allows you to upload a .txt file, preview the text conten
 
 - Run the Streamlit app:
 
-```bash
-streamlit run streamlit_app.py
+   ```bash
+   streamlit run streamlit_app.py
 
 - Open the app in your web browser by clicking on the provided URL.
 
